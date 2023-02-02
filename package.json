@@ -1,0 +1,24 @@
+{
+  "name": "final",
+  "version": "1.0.0",
+  "description": "The intention of this project is how to create app using Node.js + Express.js + EJS + Tailwind css",
+  "main": "index.js",
+  "scripts": {
+    "devcss": "postcss public/styles/tailwind.css -o public/styles/style.css -w",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "autoprefixer": "^10.4.7",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "nodemon": "^2.0.20",
+    "postcss": "^8.4.14",
+    "tailwindcss": "^3.1.5"
+  },
+  "devDependencies": {
+    "postcss-cli": "^10.0.0"
+  }
+}
