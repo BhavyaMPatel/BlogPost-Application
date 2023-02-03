@@ -2,10 +2,10 @@
   "name": "final",
   "version": "1.0.0",
   "description": "The intention of this project is how to create app using Node.js + Express.js + EJS + Tailwind css",
-  "main": "index.js",
+  "main": "index.js && postcss public/styles/tailwind.css -o public/styles/style.css -w",
   "scripts": {
     "devcss": "postcss public/styles/tailwind.css -o public/styles/style.css -w",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js && postcss public/styles/tailwind.css -o public/styles/style.css -w"
   },
   "keywords": [],
   "author": "",
