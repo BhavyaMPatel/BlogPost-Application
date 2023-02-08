@@ -1,11 +1,18 @@
-const { Router } = require("express");
 const express = require("express");
 const app = express();
+const mongoose = require('mongoose');
 const ejs = require('ejs');
+const authRoutes=require('./routes/authRoute');
+const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser');
+const urlencodedParser = bodyParser.urlencoded({ extended: true })
+
+mongoose.set('strictQuery',false);
+mongoose.connect("mongodb://127.0.0.1:27017/ArticleOne",{useNewUrlParser: true});
 
 const PORT = process.env.PORT || 3000;
-var $ = require('jquery')
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 // design file
@@ -22,21 +29,26 @@ const blogs=[{cat:"game",date:"2023",author:"Bhavya",title:"HelloHoneyBony",blog
 
 
 app.get("/ArticleOneBlogs", (req, res) => {
-  res.render("BlogRead",{ba:blogs});
+  res.render("BlogRead",{ba:blogs,UserName:"UserNameFromJWT"});
 });   
 
 app.get("/WriteBlog",(req,res)=>{
-  res.render("Write");
+  res.render("Write",{UserName:"UserNameFromJWT"});
 });
 
 app.get("/Post",(req,res)=>{
-  res.render("Post");
+  res.render("Post",{UserName:"UserNameFromJWT"});
 });
 
 app.get("/Post/:author/:title",(req,res)=>{
   res.render("Post",{AuthorName:req.params.author,Title:req.params.title});
 });
+
+  
+app.use(authRoutes)
 // server listening
+
+
 app.listen(PORT, () => {
   console.log(`The app start on http://localhost:${PORT}`);
 });
