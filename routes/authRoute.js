@@ -32,8 +32,30 @@ routes.get("/SignIn",(req,res)=>{
     res.render("SignIn");
 });
 
-routes.post("/SignIn",(req,res)=>{
-    res.redirect("/ArticleOneBlogs");
+routes.post("/SignIn",async (req,res)=>{
+
+    const {userid, password}=req.body;   
+    // console.log(email, password);
+    // login(email, password);
+        // const user=await User.findOne({userid});
+        // console.log(user);
+    try{
+        const user = await User.findOne({userid});
+        console.log(user);
+        if(user){
+            const input_password = user.password;
+            if(input_password===password){
+                // return user
+                res.status(200).json({user:userid});
+            }
+            throw Error('Incorrect password');
+        }
+        throw Error('Incorrect email address');
+    }
+    catch(e){
+    res.status(404).json({});
+    }
+
 });
   
 routes.get("/SignUp",(req,res)=>{
@@ -42,9 +64,7 @@ routes.get("/SignUp",(req,res)=>{
 });
   
 routes.post("/SignUp", async (req, res) => {
-    // const userid=req.body.userid;
-    // const email=req.body.email;
-    // const password=req.body.password;
+
     const {userid, email, password}=req.body;   
     console.log(userid, email, password);
 
