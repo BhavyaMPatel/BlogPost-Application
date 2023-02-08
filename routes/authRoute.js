@@ -4,8 +4,6 @@ const routes =Router();
 const jwt=require('jsonwebtoken');
 //Handling Error
 const handleErrors= (err) =>{
-console.log(err.message,err.code);
-
 let errors={userid:'',email:'',password:''}
 
 if(err.code==11000)
@@ -20,7 +18,26 @@ if(err.message.includes('user validation failed')){
     });
 }   
 return errors;
-}   
+}  
+
+const SignInErrors= (err) =>{
+    console.log(err);
+    let errors={userid:'',password:''};
+    if(err==="Incorrect Password")
+    {
+        console.log("Hi");
+        errors["password"]=err;
+    }
+    if(err=="User Does Not Exist")
+    {
+        console.log("Hi");
+        errors['userid']=err;
+    }
+
+    return errors;
+} 
+
+
 
 // ----
 
@@ -35,25 +52,24 @@ routes.get("/SignIn",(req,res)=>{
 routes.post("/SignIn",async (req,res)=>{
 
     const {userid, password}=req.body;   
-    // console.log(email, password);
-    // login(email, password);
-        // const user=await User.findOne({userid});
-        // console.log(user);
     try{
         const user = await User.findOne({userid});
-        console.log(user);
+        // console.log(user);
         if(user){
             const input_password = user.password;
             if(input_password===password){
                 // return user
-                res.status(200).json({user:userid});
+                const token=createToken(user.userid)
+                res.cookie('cookie',token,{httpOnly:true,maxAge:1000*60*60*24})
+                return  res.status(200).json({user:userid});
             }
-            throw Error('Incorrect password');
+            throw Error('Incorrect Password');
         }
-        throw Error('Incorrect email address');
+        throw Error('User Does Not Exist');
     }
     catch(e){
-    res.status(404).json({});
+    const errors=SignInErrors(e.message);
+    return res.status(404).json({errors});
     }
 
 });
@@ -70,8 +86,7 @@ routes.post("/SignUp", async (req, res) => {
 
     try{
     const user = await User.create({userid,email,password});
-    const token=createToken(user.userid)
-    res.cookie('cookie',token,{httpOnly:true,maxAge:1000*60*60*24})
+
     res.status(201).json({user:user.userid})
 
     }
