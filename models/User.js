@@ -8,7 +8,7 @@ const userSchema=new mongoose.Schema({
     email:{
         type:String,
         required:true,
-        lowecase:true
+        lowecase:true,
     },
     password:{
         type:String,
@@ -18,15 +18,20 @@ const userSchema=new mongoose.Schema({
 });
 
 const User=mongoose.model('user',userSchema);
-//After SignUp 
-userSchema.post('save',function(doc,next){
-    console.log('Successfully Signed Up',doc);
-    next();
-})
 
-userSchema.pre('save',function(doc,next){
-    console.log('Successfully',this);
-    next();
-})
+userSchema.static.login=async function(userid,password){
+
+    const user = await User.findOne({userid});
+    console.log(user);
+    if(user){
+        const input_password = user.password;
+        if(input_password===password){
+            return user
+        }
+        throw Error('Incorrect password');
+    }
+    throw Error('Incorrect email address');
+
+}
 
 module.exports = User;
