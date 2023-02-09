@@ -21,6 +21,9 @@
                         <div id="passworderror"></div>
                     </div>
                     <button type="submit" class="w-full text-red-50 bg-indigo-600  focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 text-center">Enhance Your Knowledge Now</button>
+                    <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+                        Dont have an account? <a href="/SignUp" class="font-medium text-primary-600 hover:underline dark:text-primary-500">SignUp Here</a>
+                    </p>
                 </form>
             </div>
         </div>
@@ -51,7 +54,7 @@
                 passworderror.textContent=data.errors.password; 
         }
         if(data.user){
-            location.assign('/');
+            location.assign('/ArticleOneBlogs');
         }
     }
     catch(e){
