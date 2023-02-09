@@ -1,5 +1,5 @@
 const { Router, application }=require('express');
-const {auth}=require('../authmiddleware/authmiddleware');
+const {auth,check}=require('../authmiddleware/authmiddleware');
 const User = require('../models/User');
 const routes =Router();
 const jwt=require('jsonwebtoken');
@@ -7,6 +7,9 @@ const jwt=require('jsonwebtoken');
 const createToken = (id) =>{
     return jwt.sign({id},'sceret',{expiresIn:24*60*60})
 }
+
+
+routes.get("*",check);
 
 routes.get("/", (req, res) => {
     res.render("HomePage",{Post:blogs});
@@ -65,10 +68,7 @@ const SignInErrors= (err) =>{
     return errors;
 } 
 
-
-
 // ----
-
 routes.get("/SignIn",(req,res)=>{
     res.render("SignIn");
 });
@@ -116,15 +116,12 @@ res.status(201).json({user:user.userid})
 catch(err){
 const errors =handleErrors(err);
 res.status(400).json({errors});
-}
-    //  const token=createToken(newUser.userid)
-    //     res.cookie('cookie',token,{httpOnly:true,maxAge:1000*60*60*24})
-    //     res.status(201).json({userid:newUser.userid})
-    
-    // catch(e){
-    // const errors = handleErrors(e);
-    // res.status(400).json({errors});
-    // }   
+} 
 }); 
+
+routes.get('/LogOut', (req, res) => {
+    res.cookie('cookie','',{maxAge:1})
+    res.redirect('/');
+});
 
 module.exports =routes
