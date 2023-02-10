@@ -1,20 +1,30 @@
 const mongoose = require('mongoose');
-const userSchema=new mongoose.Schema({
-    userid:{
+
+const BlogSchema=new mongoose.Schema({
+    UserId:{
         type: String,
+        require:true,
     },
-    email:{
+    BlogTitle:{
         type:String,
         required:true,
-        lowecase:true,
     },
-    password:{
+    BlogCategory:{
         type:String,
-        required:true
+        required:true,
+    },
+    BlogData:{
+        type:String,
+        required:true,
+    },
+    Review:{
+        type:Number,
+    },
+    Likes:{
+        type:Number,
     }
-
 });
 
-const User=mongoose.model('user',userSchema);
+const Blog=mongoose.model('Blogs',BlogSchema);
 
-module.exports = User;
+module.exports = Blog;

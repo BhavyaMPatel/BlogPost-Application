@@ -1,6 +1,8 @@
 const { Router, application }=require('express');
 const {auth,check}=require('../authmiddleware/authmiddleware');
 const User = require('../models/User');
+const Blog = require('../models/Blogs');
+
 const routes =Router();
 const jwt=require('jsonwebtoken');
 
@@ -8,29 +10,52 @@ const createToken = (id) =>{
     return jwt.sign({id},'sceret',{expiresIn:24*60*60})
 }
 
-
 routes.get("*",check);
 
 routes.get("/", (req, res) => {
-    res.render("HomePage",{Post:blogs});
+    let blogs_array=[];
+    Blog.find({},function(err, blog) {
+        blogs_array=blog;
+        res.render("HomePage",{blogs:blogs_array});
+    })
 });
   
-const blogs=[{cat:"game",date:"2023",author:"Bhavya",title:"HelloHoneyBony",blog:"HelloHoneyBony"},{cat:"ss",date:"2023",author:"Bhv",title:"HelloHoneyBony",blog:"Hii"},{cat:"ddd",date:"2023",author:"Bhav",title:"HHoneyBony",blog:"Hii"},{cat:"ddnr",date:"2023",author:"Bhaa",title:"HeeyBony",blog:"Hii"}]
+// const blogs=[{cat:"game",date:"2023",author:"Bhavya",title:"HelloHoneyBony",blog:"HelloHoneyBony"},{cat:"ss",date:"2023",author:"Bhv",title:"HelloHoneyBony",blog:"Hii"},{cat:"ddd",date:"2023",author:"Bhav",title:"HHoneyBony",blog:"Hii"},{cat:"ddnr",date:"2023",author:"Bhaa",title:"HeeyBony",blog:"Hii"}]
 //If Authenticated The GO;    
+
 routes.get("/ArticleOneBlogs",auth,(req, res) => {
-    res.render("BlogRead",{ba:blogs,UserName:"UserNameFromJWT"});
+    let blogs_array=[];
+    Blog.find({},function(err, blog) {
+        blogs_array=blog;
+        res.render("BlogRead",{blogs:blogs_array});
+    })
 });   
   
 routes.get("/WriteBlog",auth,(req,res)=>{
-    res.render("Write",{UserName:"UserNameFromJWT"});
+    res.render("Write");
 });
+
+routes.post('/WriteBlog',auth,check,async(req,res)=>{
+const {UserId,BlogTitle,BlogCategory,BlogData}=req.body;  
+const new_blog=new Blog({
+    UserId :UserId,
+    BlogTitle:BlogTitle,
+    BlogCategory:BlogCategory,
+    BlogData:BlogData,
+    Review:0,
+    Likes:0    
+  }); 
+new_blog.save();
+res.redirect('/');
+// res.render("Post",{AuthorName:new_blog.UserId,Title:new_blog.BlogTitle,BlogData:new_blog.BlogData});
+})
   
-routes.get("/Post",auth,(req,res)=>{
-    res.render("Post",{UserName:"UserNameFromJWT"});
-});
+
   
-routes.get("/Post/:author/:title",auth,(req,res)=>{
-    res.render("Post",{AuthorName:req.params.author,Title:req.params.title});
+routes.get("/Post/:authorid/:title",auth,async (req,res)=>{
+
+    const data = await Blog.find({UserId:req.params.authorid,BlogTitle:req.params.title});
+    res.render("Post",{AuthorName:req.params.authorid,Title:req.params.title,BlogData:data[0].BlogData});
 });
 
 //Handling Error
@@ -56,12 +81,10 @@ const SignInErrors= (err) =>{
     let errors={userid:'',password:''};
     if(err==="Incorrect Password")
     {
-        console.log("Hi");
         errors["password"]=err;
     }
     if(err=="User Does Not Exist")
     {
-        console.log("Hi");
         errors['userid']=err;
     }
 
@@ -78,7 +101,6 @@ routes.post("/SignIn",async (req,res)=>{
     const {userid, password}=req.body;   
     try{
         const user = await User.findOne({userid});
-        // console.log(user);
         if(user){
             const input_password = user.password;
             if(input_password===password){
@@ -105,7 +127,6 @@ routes.get("/SignUp",(req,res)=>{
 routes.post("/SignUp",async (req, res) => {
 
 const {userid, email, password}=req.body;   
-console.log(userid, email, password);
 
 try{
 const user = await User.create({userid,email,password});

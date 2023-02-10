@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 const userSchema=new mongoose.Schema({
     userid:{
         type: String,
@@ -18,5 +19,6 @@ const userSchema=new mongoose.Schema({
 });
 
 const User=mongoose.model('user',userSchema);
+
 
 module.exports = User;
