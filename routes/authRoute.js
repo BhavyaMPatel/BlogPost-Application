@@ -12,15 +12,15 @@ const createToken = (id) =>{
 
 routes.get("*",check);
 
-routes.get("/", (req, res) => {
+routes.get("/", async (req, res) => {
     let blogs_array=[];
     Blog.find({},function(err, blog) {
         blogs_array=blog;
+        // console.log(blogs_array[0].UserId);   
         res.render("HomePage",{blogs:blogs_array});
     })
 });
   
-// const blogs=[{cat:"game",date:"2023",author:"Bhavya",title:"HelloHoneyBony",blog:"HelloHoneyBony"},{cat:"ss",date:"2023",author:"Bhv",title:"HelloHoneyBony",blog:"Hii"},{cat:"ddd",date:"2023",author:"Bhav",title:"HHoneyBony",blog:"Hii"},{cat:"ddnr",date:"2023",author:"Bhaa",title:"HeeyBony",blog:"Hii"}]
 //If Authenticated The GO;    
 
 routes.get("/ArticleOneBlogs",auth,(req, res) => {
