@@ -25,7 +25,7 @@ nodemon
 
 <h3> You have to installed Node.js </h3>
 
-<h3> Clone te repo or download it </h3>
+<h3> Clone the repo or download it </h3>
 <h3> Run follwing commands inside your project folder terminal </h3>
 
 ```
