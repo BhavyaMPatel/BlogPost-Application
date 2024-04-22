@@ -36,6 +36,10 @@ $ npm init
 $ npm install
 ```
 
+```
+$ node index.js
+```
+
 
 
 
